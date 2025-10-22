@@ -19,12 +19,10 @@ def main() -> None:
 
     # Add a picture that fills the screen
     with Image.open("bird.png") as img:
-        picture = Picture(app, image=img, width=screen_width, height=screen_height)
-        bird_image_size = get_fullscreen_size_for_image(img, screen_width, screen_height)
-        picture.width = bird_image_size[0]
-        picture.height = bird_image_size[1]
+        image_size = get_fullscreen_size_for_image(img, screen_width, screen_height)
+        picture = Picture(app, image=img, width=image_size[0], height=image_size[1])
 
-        app.display()
+    app.display()
 
 
 def get_fullscreen_size_for_image(image: Image, screen_width: int, screen_height: int) -> tuple[int, int]:
