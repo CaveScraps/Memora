@@ -2,12 +2,16 @@
 
 from guizero import App, Picture
 from PIL import Image
-
-# TODO: Find out the screen size dynamically
-screen_width = 1920
-screen_height = 1080
+import tkinter as tk
 
 def main() -> None:
+
+    # Get the screen size using tkinter
+    root = tk.Tk()
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    root.destroy()
+
     app = App(title="Fullscreen App", layout="auto", bg="black")
 
     # Set the app to full screen, using 'q' to exit
@@ -16,14 +20,14 @@ def main() -> None:
     # Add a picture that fills the screen
     with Image.open("bird.png") as img:
         picture = Picture(app, image=img, width=screen_width, height=screen_height)
-        bird_image_size = get_fullscreen_size_for_image(img)
+        bird_image_size = get_fullscreen_size_for_image(img, screen_width, screen_height)
         picture.width = bird_image_size[0]
         picture.height = bird_image_size[1]
 
         app.display()
 
 
-def get_fullscreen_size_for_image(image: Image) -> tuple[int, int]:
+def get_fullscreen_size_for_image(image: Image, screen_width: int, screen_height: int) -> tuple[int, int]:
 
     image_size = image.size
 
