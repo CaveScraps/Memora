@@ -12,7 +12,7 @@ def main() -> None:
     screen_height = root.winfo_screenheight()
     root.destroy()
 
-    app = App(title="Fullscreen App", layout="auto", bg="black")
+    app = App(title="Memora", layout="auto", bg="black")
 
     # Set the app to full screen, using 'q' to exit
     app.set_full_screen("q")
