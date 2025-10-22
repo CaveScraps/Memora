@@ -22,7 +22,18 @@ def main() -> None:
         image_size = get_fullscreen_size_for_image(img, screen_width, screen_height)
         picture = Picture(app, image=img, width=image_size[0], height=image_size[1])
 
+    # After 5 seconds, change the image
+    app.after(5000, ChangeImage, args={picture})
+
     app.display()
+
+
+def ChangeImage(picture: Picture) -> None:
+    with Image.open("Also Bird.png") as img:
+        picture.image = img
+        image_size = get_fullscreen_size_for_image(img, screen_width, screen_height)
+        picture.width = image_size[0]
+        picture.height = image_size[1]
 
 
 def get_fullscreen_size_for_image(image: Image, screen_width: int, screen_height: int) -> tuple[int, int]:
