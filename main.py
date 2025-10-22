@@ -1,17 +1,45 @@
 #!./venv/bin/python3
 
-from guizero import App, Text
+from guizero import App, Picture
+from PIL import Image
 
-def exit_fullscreen_message():
-    app.info("Fullscreen", "Press 'q' to exit full screen.")
+def main() -> None:
+    app = App(title="Fullscreen App", layout="auto", bg="black")
 
-app = App(title="Fullscreen App", layout="auto")
-message = Text(app, text="This app is now in full screen!")
+    # Set the app to full screen, using 'q' to exit
+    app.set_full_screen("q")
 
-# Set the app to full screen, using 'q' to exit
-app.set_full_screen("q") 
+    # Add a picture that fills the screen
+    with Image.open("bird.png") as img:
+        picture = Picture(app, image=img, width=1920, height=1080)
+        bird_image_size = get_fullscreen_size_for_image(img)
+        picture.width = bird_image_size[0]
+        picture.height = bird_image_size[1]
 
-# Display a message about how to exit full screen
-exit_fullscreen_message()
+        app.display()
 
-app.display()
+
+def get_fullscreen_size_for_image(image: Image) -> tuple[int, int]:
+
+    image_size = image.size
+
+    #now we need to scale this up to fullscreen size while maintaining aspect ratio
+    screen_width = 1920
+    screen_height = 1080
+    image_width = image_size[0]
+    image_height = image_size[1]
+
+    image_aspect = image_width / image_height
+    screen_aspect = screen_width / screen_height
+
+    if image_aspect > screen_aspect:
+        scale_factor = screen_width / image_width
+    else:
+        scale_factor = screen_height / image_height
+
+    new_size = (int(image_width * scale_factor), int(image_height * scale_factor))
+    return new_size
+
+
+if __name__ == "__main__":
+    main()
