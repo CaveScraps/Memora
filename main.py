@@ -3,6 +3,10 @@
 from guizero import App, Picture
 from PIL import Image
 
+# TODO: Find out the screen size dynamically
+screen_width = 1920
+screen_height = 1080
+
 def main() -> None:
     app = App(title="Fullscreen App", layout="auto", bg="black")
 
@@ -11,7 +15,7 @@ def main() -> None:
 
     # Add a picture that fills the screen
     with Image.open("bird.png") as img:
-        picture = Picture(app, image=img, width=1920, height=1080)
+        picture = Picture(app, image=img, width=screen_width, height=screen_height)
         bird_image_size = get_fullscreen_size_for_image(img)
         picture.width = bird_image_size[0]
         picture.height = bird_image_size[1]
@@ -24,8 +28,6 @@ def get_fullscreen_size_for_image(image: Image) -> tuple[int, int]:
     image_size = image.size
 
     #now we need to scale this up to fullscreen size while maintaining aspect ratio
-    screen_width = 1920
-    screen_height = 1080
     image_width = image_size[0]
     image_height = image_size[1]
 
