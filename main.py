@@ -4,13 +4,17 @@ from guizero import App, Picture
 from PIL import Image
 import tkinter as tk
 
-def main() -> None:
+from IImageProvider import IImageProvider
+from FolderImageProvider import FolderImageProvider as ImageProvider
 
-    # Get the screen size using tkinter
-    root = tk.Tk()
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
-    root.destroy()
+# Get the screen size using tkinter
+root = tk.Tk()
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+root.destroy()
+
+
+def main(image_provider: IImageProvider) -> None:
 
     app = App(title="Memora", layout="auto", bg="black")
 
@@ -18,18 +22,18 @@ def main() -> None:
     app.set_full_screen("q")
 
     # Add a picture that fills the screen
-    with Image.open("bird.png") as img:
+    with image_provider.get_first_image() as img:
         image_size = get_fullscreen_size_for_image(img, screen_width, screen_height)
         picture = Picture(app, image=img, width=image_size[0], height=image_size[1])
 
     # After 5 seconds, change the image
-    app.after(5000, ChangeImage, args={picture})
+    app.after(5000, ChangeImage, args=[picture, image_provider])
 
     app.display()
 
 
-def ChangeImage(picture: Picture) -> None:
-    with Image.open("Also Bird.png") as img:
+def ChangeImage(picture: Picture, image_provider: IImageProvider) -> None:
+    with image_provider.get_next_image() as img:
         picture.image = img
         image_size = get_fullscreen_size_for_image(img, screen_width, screen_height)
         picture.width = image_size[0]
@@ -57,4 +61,5 @@ def get_fullscreen_size_for_image(image: Image, screen_width: int, screen_height
 
 
 if __name__ == "__main__":
-    main()
+    image_provider = ImageProvider()
+    main(image_provider)
