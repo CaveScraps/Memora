@@ -13,6 +13,7 @@ screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 root.destroy()
 
+image_change_interval_ms = 10000  # Change image every 10 seconds
 
 def main(image_provider: IImageProvider) -> None:
 
@@ -21,13 +22,11 @@ def main(image_provider: IImageProvider) -> None:
     # Set the app to full screen, using 'q' to exit
     app.set_full_screen("q")
 
-    # Add a picture that fills the screen
     with image_provider.get_first_image() as img:
         image_size = get_fullscreen_size_for_image(img, screen_width, screen_height)
         picture = Picture(app, image=img, width=image_size[0], height=image_size[1])
 
-    # After 5 seconds, change the image
-    app.after(5000, ChangeImage, args=[picture, image_provider])
+    app.repeat(image_change_interval_ms, ChangeImage, args=[picture, image_provider])
 
     app.display()
 
@@ -40,7 +39,7 @@ def ChangeImage(picture: Picture, image_provider: IImageProvider) -> None:
         picture.height = image_size[1]
 
 
-def get_fullscreen_size_for_image(image: Image, screen_width: int, screen_height: int) -> tuple[int, int]:
+def get_fullscreen_size_for_image(image: Image.Image, screen_width: int, screen_height: int) -> tuple[int, int]:
 
     image_size = image.size
 
