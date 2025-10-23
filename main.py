@@ -1,19 +1,21 @@
 #!./venv/bin/python3
+#pylint: disable=missing-docstring
 
+import tkinter as tk
 from guizero import App, Picture
 from PIL import Image
-import tkinter as tk
 
-from IImageProvider import IImageProvider
-from FolderImageProvider import FolderImageProvider as ImageProvider
+from i_image_provider import IImageProvider
+from folder_image_provider import FolderImageProvider as ImageProvider
 
 # Get the screen size using tkinter
 root = tk.Tk()
 screen_width = root.winfo_screenwidth()
+
 screen_height = root.winfo_screenheight()
 root.destroy()
 
-image_change_interval_ms = 10000  # Change image every 10 seconds
+IMAGE_CHANGE_INTERVAL = 10000  # Change image every 10 seconds
 
 def main(image_provider: IImageProvider) -> None:
 
@@ -23,23 +25,23 @@ def main(image_provider: IImageProvider) -> None:
     app.set_full_screen("q")
 
     with image_provider.get_first_image() as img:
-        image_size = get_fullscreen_size_for_image(img, screen_width, screen_height)
+        image_size = get_scaled_image_size(img)
         picture = Picture(app, image=img, width=image_size[0], height=image_size[1])
 
-    app.repeat(image_change_interval_ms, ChangeImage, args=[picture, image_provider])
+    app.repeat(IMAGE_CHANGE_INTERVAL, change_image, args=[picture, image_provider])
 
     app.display()
 
 
-def ChangeImage(picture: Picture, image_provider: IImageProvider) -> None:
+def change_image(picture: Picture, image_provider: IImageProvider) -> None:
     with image_provider.get_next_image() as img:
         picture.image = img
-        image_size = get_fullscreen_size_for_image(img, screen_width, screen_height)
+        image_size = get_scaled_image_size(img,)
         picture.width = image_size[0]
         picture.height = image_size[1]
 
 
-def get_fullscreen_size_for_image(image: Image.Image, screen_width: int, screen_height: int) -> tuple[int, int]:
+def get_scaled_image_size(image: Image.Image) -> tuple[int, int]:
 
     image_size = image.size
 
@@ -60,5 +62,4 @@ def get_fullscreen_size_for_image(image: Image.Image, screen_width: int, screen_
 
 
 if __name__ == "__main__":
-    image_provider = ImageProvider()
-    main(image_provider)
+    main(ImageProvider())
